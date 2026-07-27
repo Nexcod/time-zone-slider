@@ -32,6 +32,7 @@ enum Theme {
     static let neutral800 = Color(hex: 0x474238)
     static let neutral900 = Color(hex: 0x2E2B25)
 
+    static let accent = Color(hex: 0xC67139)
     static let accent100 = Color(hex: 0xFFF2EB)
     static let accent200 = Color(hex: 0xFFE1D0)
     static let accent300 = Color(hex: 0xFFC6A5)

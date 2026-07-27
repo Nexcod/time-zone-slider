@@ -31,11 +31,17 @@ struct TimeZonesView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 2)
 
-                Text(todayLine)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Theme.neutral600)
-                    .padding(.horizontal, 18)
-                    .padding(.bottom, 8)
+                HStack {
+                    Text(todayLine)
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.neutral600)
+                    Spacer()
+                    if editing {
+                        formatToggle
+                    }
+                }
+                .padding(.horizontal, 18)
+                .padding(.bottom, 8)
 
                 cardsStrip
             }
@@ -93,6 +99,32 @@ struct TimeZonesView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    private var formatToggle: some View {
+        HStack(spacing: 0) {
+            formatOption("24h", .h24)
+            Rectangle()
+                .fill(Theme.divider)
+                .frame(width: 1)
+            formatOption("12h", .h12)
+        }
+        .fixedSize()
+        .clipShape(Capsule())
+        .overlay(Capsule().strokeBorder(Theme.divider, lineWidth: 1))
+    }
+
+    private func formatOption(_ label: String, _ format: HourFormat) -> some View {
+        let selected = model.hourFormat == format
+        return Button(label) {
+            model.hourFormat = format
+        }
+        .buttonStyle(.plain)
+        .font(.system(size: 11, weight: .semibold))
+        .foregroundStyle(selected ? Theme.bg : Theme.text)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(selected ? Theme.accent : .clear)
     }
 
     private var cardsStrip: some View {

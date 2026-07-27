@@ -29,11 +29,14 @@ struct TimeZoneModel {
     var cities: [City] = TimeZoneModel.loadCities() {
         didSet { Self.saveCities(cities) }
     }
-    var hourFormat: HourFormat = .h24
+    var hourFormat: HourFormat = TimeZoneModel.loadHourFormat() {
+        didSet { UserDefaults.standard.set(hourFormat.rawValue, forKey: Self.hourFormatKey) }
+    }
     var showHomeDiff = true
 
     static let defaultCities = ["bangkok", "london", "tbilisi"]
     private static let citiesKey = "cities.v1"
+    private static let hourFormatKey = "hourFormat.v1"
 
     static let catalog: [City] = [
         City(id: "losangeles", name: "Los Angeles", country: "United States", tz: "America/Los_Angeles"),
@@ -64,6 +67,10 @@ struct TimeZoneModel {
             if !valid.isEmpty { return valid }
         }
         return defaultCities.compactMap { id in catalog.first { $0.id == id } }
+    }
+
+    static func loadHourFormat() -> HourFormat {
+        HourFormat(rawValue: UserDefaults.standard.string(forKey: hourFormatKey) ?? "") ?? .h24
     }
 
     static func saveCities(_ cities: [City]) {
