@@ -59,6 +59,16 @@ struct TimeZonesView: View {
             Spacer()
 
             HStack(spacing: 8) {
+                Button("Now") {
+                    model.resetToNow()
+                }
+                .font(Theme.heading(13))
+                .foregroundStyle(Theme.text)
+                .padding(.horizontal, 15)
+                .padding(.vertical, 8)
+                .background(Theme.neutral100, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.divider, lineWidth: 1))
+
                 Button(editing ? "Done" : "Edit") {
                     editing.toggle()
                 }

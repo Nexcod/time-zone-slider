@@ -90,7 +90,7 @@ struct AddCityView: View {
                         .foregroundStyle(Theme.neutral600)
                 }
                 Spacer()
-                Text(TimeZoneModel.gmtLabel(city.off))
+                Text(model.gmtLabel(city))
                     .badge(background: Theme.neutral200, foreground: Theme.neutral700)
             }
             .padding(.horizontal, 14)

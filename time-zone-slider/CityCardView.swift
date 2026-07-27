@@ -15,7 +15,7 @@ struct CityCardView: View {
     let editing: Bool
 
     private var isHome: Bool { index == 0 }
-    private var local: Double { model.localHour(city) }
+    private var local: Double { model.localFraction(city) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -37,7 +37,7 @@ struct CityCardView: View {
             .frame(minHeight: 24)
 
             HStack(spacing: 5) {
-                Text(TimeZoneModel.gmtLabel(city.off))
+                Text(model.gmtLabel(city))
                     .badge(background: Theme.neutral200, foreground: Theme.neutral700)
                 if isHome {
                     Text("Home")
@@ -51,7 +51,7 @@ struct CityCardView: View {
             .frame(minHeight: 22)
 
             HStack(alignment: .firstTextBaseline, spacing: 7) {
-                Text(model.fmt(local))
+                Text(model.timeLabel(city))
                     .font(Theme.heading(29))
                 if let day = model.dayBadge(city) {
                     Text(day)
@@ -133,7 +133,7 @@ struct CityCardView: View {
     }
 
     private var knob: some View {
-        Text(model.fmt(local))
+        Text(model.timeLabel(city))
             .font(Theme.heading(13))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
