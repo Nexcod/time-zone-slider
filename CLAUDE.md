@@ -16,9 +16,11 @@ SwiftUI iOS app: a timezone converter with draggable 24-hour dials
 
 ## Design → code mapping
 
-- `Theme.swift` — color/radius tokens ported from the Organic `styles.css`.
-  Headings approximate Caprasimo with system serif bold; body uses system
-  sans (fonts are not bundled).
+- `Theme.swift` — color/radius tokens ported from the Organic `styles.css`,
+  made adaptive: dark-mode values are not in the source system, they mirror
+  the light tonal ramps around the same ink/cream anchors. Text uses
+  Dynamic Type semantic styles; headings approximate Caprasimo with system
+  serif bold (fonts are not bundled).
 - `TimeZoneModel.swift` — logic ported from the DC script, then upgraded:
   the shared `moment` is a real `Date` and cities carry IANA time-zone
   identifiers, so offsets/GMT badges are DST-aware. Dragging a city's dial

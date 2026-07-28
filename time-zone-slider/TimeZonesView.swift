@@ -33,7 +33,7 @@ struct TimeZonesView: View {
 
                 HStack {
                     Text(todayLine)
-                        .font(.system(size: 12))
+                        .font(.caption)
                         .foregroundStyle(Theme.neutral600)
                     Spacer()
                     if editing {
@@ -53,6 +53,7 @@ struct TimeZonesView: View {
             }
         }
         .foregroundStyle(Theme.text)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .animation(.easeOut(duration: 0.2), value: adding)
         .animation(.easeOut(duration: 0.15), value: editing)
     }
@@ -60,7 +61,7 @@ struct TimeZonesView: View {
     private var header: some View {
         HStack {
             Text("Time Zones")
-                .font(Theme.heading(27))
+                .font(Theme.heading(.title))
 
             Spacer()
 
@@ -68,7 +69,7 @@ struct TimeZonesView: View {
                 Button("Now") {
                     model.resetToNow()
                 }
-                .font(Theme.heading(13))
+                .font(Theme.heading(.footnote))
                 .foregroundStyle(Theme.text)
                 .padding(.horizontal, 15)
                 .padding(.vertical, 8)
@@ -78,7 +79,7 @@ struct TimeZonesView: View {
                 Button(editing ? "Done" : "Edit") {
                     editing.toggle()
                 }
-                .font(Theme.heading(13))
+                .font(Theme.heading(.footnote))
                 .foregroundStyle(Theme.text)
                 .padding(.horizontal, 15)
                 .padding(.vertical, 8)
@@ -93,7 +94,7 @@ struct TimeZonesView: View {
                         .foregroundStyle(.white)
                         .frame(width: 36, height: 36)
                         .background(Theme.accent500, in: Circle())
-                        .shadow(color: Theme.neutral900.opacity(0.14), radius: 1, y: 1)
+                        .shadow(color: Theme.ink.opacity(0.14), radius: 1, y: 1)
                 }
                 .accessibilityLabel("Add city")
             }
@@ -120,11 +121,12 @@ struct TimeZonesView: View {
             model.hourFormat = format
         }
         .buttonStyle(.plain)
-        .font(.system(size: 11, weight: .semibold))
+        .font(.caption2.weight(.semibold))
         .foregroundStyle(selected ? Theme.bg : Theme.text)
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
         .background(selected ? Theme.accent : .clear)
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
     private var cardsStrip: some View {
@@ -157,7 +159,7 @@ struct TimeZonesView: View {
                     .frame(width: 44, height: 44)
                     .background(Theme.accent200, in: Circle())
                 Text("Add city")
-                    .font(Theme.heading(14))
+                    .font(Theme.heading(.subheadline))
             }
             .foregroundStyle(Theme.accent700)
             .frame(width: 120)

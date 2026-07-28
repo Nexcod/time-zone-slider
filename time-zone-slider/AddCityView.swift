@@ -20,7 +20,7 @@ struct AddCityView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Add a city")
-                    .font(Theme.heading(24))
+                    .font(Theme.heading(.title2))
                 Spacer()
                 Button {
                     adding = false
@@ -43,7 +43,7 @@ struct AddCityView: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Theme.neutral600)
                 TextField("Search city", text: $query)
-                    .font(.system(size: 14))
+                    .font(.subheadline)
                     .focused($searchFocused)
                     .autocorrectionDisabled()
             }
@@ -60,7 +60,7 @@ struct AddCityView: View {
                     }
                     if results.isEmpty {
                         Text("No cities found")
-                            .font(.system(size: 13))
+                            .font(.footnote)
                             .foregroundStyle(Theme.neutral600)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 30)
@@ -83,10 +83,10 @@ struct AddCityView: View {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(city.name)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Theme.text)
                     Text(city.country)
-                        .font(.system(size: 11))
+                        .font(.caption2)
                         .foregroundStyle(Theme.neutral600)
                 }
                 Spacer()

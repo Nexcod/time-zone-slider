@@ -171,6 +171,11 @@ struct TimeZoneModel {
         moment = .now
     }
 
+    /// Shifts the shared moment by whole hours (VoiceOver adjustable dials).
+    mutating func adjustHour(by delta: Int) {
+        moment = moment.addingTimeInterval(TimeInterval(delta) * 3600)
+    }
+
     struct HourLabel: Identifiable {
         let id: Int
         let label: String

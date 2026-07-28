@@ -31,7 +31,7 @@ struct CityCardView: View {
                         .foregroundStyle(Theme.accent600)
                 }
                 Text(city.name)
-                    .font(Theme.heading(19))
+                    .font(Theme.heading(.title3))
                     .lineLimit(1)
             }
             .frame(minHeight: 24)
@@ -52,10 +52,12 @@ struct CityCardView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 7) {
                 Text(model.timeLabel(city))
-                    .font(Theme.heading(29))
+                    .font(Theme.heading(.title))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 if let day = model.dayBadge(city) {
                     Text(day)
-                        .font(.system(size: 10.5, weight: .bold))
+                        .font(.caption2.weight(.bold))
                         .foregroundStyle(Theme.accent700)
                 }
             }
@@ -66,7 +68,7 @@ struct CityCardView: View {
         }
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 14, trailing: 12))
         .background(Theme.neutral100, in: RoundedRectangle(cornerRadius: Theme.radiusLg))
-        .shadow(color: Theme.neutral900.opacity(0.14), radius: 1, y: 1)
+        .shadow(color: Theme.ink.opacity(0.14), radius: 1, y: 1)
     }
 
     private var editControls: some View {
@@ -110,7 +112,9 @@ struct CityCardView: View {
                 VStack(spacing: 0) {
                     ForEach(model.hourLabels) { hour in
                         Text(hour.label)
-                            .font(.system(size: 10, weight: hour.bold ? .bold : .regular))
+                            .font(hour.bold ? .caption2.weight(.bold) : .caption2)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.4)
                             .foregroundStyle(hour.bold ? Theme.neutral800 : Theme.neutral600)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
@@ -128,19 +132,26 @@ struct CityCardView: View {
                         model.pick(cityIndex: index, fraction: value.location.y / height)
                     }
             )
+            .accessibilityElement()
+            .accessibilityLabel("\(city.name) time dial")
+            .accessibilityValue(model.timeLabel(city))
+            .accessibilityHint("Adjust to change the time in every city")
+            .accessibilityAdjustableAction { direction in
+                model.adjustHour(by: direction == .increment ? 1 : -1)
+            }
         }
         .frame(maxHeight: .infinity)
     }
 
     private var knob: some View {
         Text(model.timeLabel(city))
-            .font(Theme.heading(13))
+            .font(Theme.heading(.footnote))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 28)
             .background(Theme.accent500, in: Capsule())
             .overlay(Capsule().strokeBorder(Theme.neutral100, lineWidth: 2))
-            .shadow(color: Theme.neutral900.opacity(0.16), radius: 5, y: 3)
+            .shadow(color: Theme.ink.opacity(0.16), radius: 5, y: 3)
             .padding(.horizontal, -6)
             .allowsHitTesting(false)
     }
