@@ -126,11 +126,10 @@ struct CityCardView: View {
                     .offset(y: (local + 0.5) / 24 * height - 14)
             }
             .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        model.pick(cityIndex: index, fraction: value.location.y / height)
-                    }
+            .overlay(
+                DialGestureView { fraction in
+                    model.pick(cityIndex: index, fraction: fraction)
+                }
             )
             .accessibilityElement()
             .accessibilityLabel("\(city.name) time dial")
