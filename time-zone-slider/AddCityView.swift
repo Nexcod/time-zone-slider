@@ -23,7 +23,7 @@ struct AddCityView: View {
                     .font(Theme.heading(.title2))
                 Spacer()
                 Button {
-                    adding = false
+                    close()
                 } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 12, weight: .bold))
@@ -75,10 +75,20 @@ struct AddCityView: View {
         .onAppear { searchFocused = true }
     }
 
+    // Removing a focused TextField from the hierarchy mid-transition can
+    // leave the keyboard up, so drop focus before tearing the overlay down.
+    private func close() {
+        searchFocused = false
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil
+        )
+        adding = false
+    }
+
     private func resultRow(_ city: City) -> some View {
         Button {
             model.add(city)
-            adding = false
+            close()
         } label: {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 1) {
