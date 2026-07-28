@@ -26,6 +26,9 @@ SwiftUI iOS app: a timezone converter with draggable 24-hour dials
   identifiers, so offsets/GMT badges are DST-aware. Dragging a city's dial
   picks that city's local hour (keeping its local date) and back-solves
   `moment`. The city list persists to `UserDefaults` (key `cities.v1`).
+  The add-city catalog is generated at launch from
+  `TimeZone.knownTimeZoneIdentifiers` (localized exemplar-city names via
+  the ICU `VVV` format), not hardcoded.
 - `TimeZonesView.swift` / `CityCardView.swift` / `AddCityView.swift` — the
   screen, city card with dial, and add-city overlay.
 

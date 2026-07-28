@@ -34,29 +34,33 @@ struct TimeZoneModel {
     }
     var showHomeDiff = true
 
-    static let defaultCities = ["bangkok", "london", "tbilisi"]
+    static let defaultCities = ["Asia/Bangkok", "Europe/London", "Asia/Tbilisi"]
     private static let citiesKey = "cities.v1"
     private static let hourFormatKey = "hourFormat.v1"
 
-    static let catalog: [City] = [
-        City(id: "losangeles", name: "Los Angeles", country: "United States", tz: "America/Los_Angeles"),
-        City(id: "chicago", name: "Chicago", country: "United States", tz: "America/Chicago"),
-        City(id: "newyork", name: "New York", country: "United States", tz: "America/New_York"),
-        City(id: "saopaulo", name: "São Paulo", country: "Brazil", tz: "America/Sao_Paulo"),
-        City(id: "london", name: "London", country: "United Kingdom", tz: "Europe/London"),
-        City(id: "lisbon", name: "Lisbon", country: "Portugal", tz: "Europe/Lisbon"),
-        City(id: "paris", name: "Paris", country: "France", tz: "Europe/Paris"),
-        City(id: "berlin", name: "Berlin", country: "Germany", tz: "Europe/Berlin"),
-        City(id: "moscow", name: "Moscow", country: "Russia", tz: "Europe/Moscow"),
-        City(id: "dubai", name: "Dubai", country: "United Arab Emirates", tz: "Asia/Dubai"),
-        City(id: "tbilisi", name: "Tbilisi", country: "Georgia", tz: "Asia/Tbilisi"),
-        City(id: "delhi", name: "Delhi", country: "India", tz: "Asia/Kolkata"),
-        City(id: "bangkok", name: "Bangkok", country: "Thailand", tz: "Asia/Bangkok"),
-        City(id: "singapore", name: "Singapore", country: "Singapore", tz: "Asia/Singapore"),
-        City(id: "tokyo", name: "Tokyo", country: "Japan", tz: "Asia/Tokyo"),
-        City(id: "sydney", name: "Sydney", country: "Australia", tz: "Australia/Sydney"),
-        City(id: "auckland", name: "Auckland", country: "New Zealand", tz: "Pacific/Auckland"),
-    ]
+    /// Every city-style zone in the system IANA database, named with the
+    /// locale's exemplar city (ICU "VVV" — the same names the Clock app
+    /// shows). The identifier's region path becomes the subtitle.
+    static let catalog: [City] = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "VVV"
+        let now = Date()
+        return TimeZone.knownTimeZoneIdentifiers
+            .compactMap { id -> City? in
+                let parts = id.split(separator: "/")
+                guard parts.count > 1, parts[0] != "Etc",
+                      let tz = TimeZone(identifier: id) else { return nil }
+                formatter.timeZone = tz
+                let exemplar = formatter.string(from: now)
+                let name = exemplar.isEmpty
+                    ? parts.last!.replacingOccurrences(of: "_", with: " ")
+                    : exemplar
+                let region = parts.dropLast().joined(separator: " · ")
+                    .replacingOccurrences(of: "_", with: " ")
+                return City(id: id, name: name, country: region, tz: id)
+            }
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }()
 
     // MARK: Persistence
 
@@ -198,10 +202,16 @@ struct TimeZoneModel {
     // MARK: City list
 
     func searchResults(query: String) -> [City] {
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-        let have = Set(cities.map(\.id))
+        let q = query.trimmingCharacters(in: .whitespaces)
+        // Cities saved before the generated catalog have short ids
+        // ("bangkok"), so dedupe by zone rather than id.
+        let have = Set(cities.map(\.tz))
         return Self.catalog.filter { c in
-            !have.contains(c.id) && (q.isEmpty || "\(c.name) \(c.country)".lowercased().contains(q))
+            guard !have.contains(c.tz) else { return false }
+            if q.isEmpty { return true }
+            // The identifier keeps English names searchable in other locales.
+            let haystack = "\(c.name) \(c.country) \(c.tz.replacingOccurrences(of: "_", with: " "))"
+            return haystack.localizedStandardContains(q)
         }
     }
 
